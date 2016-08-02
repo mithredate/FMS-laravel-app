@@ -1,6 +1,5 @@
 <?php
 use Illuminate\Database\Eloquent\Factory;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Mithredate\FMSUpdater\Model\FMSUpdater;
@@ -28,25 +27,30 @@ class FMSUpdaterTest extends FMSTestCase
         // Continue with the rest of setUp for migrations, etc.
     }
 
-    public function testUpdateHandler(){
 
+    public function testFMSUpdaterModel(){
+        $updater = FMSUpdater::first();
+        $updater->update(['hash' => sha1(str_random())]);
+        $this->seeInDatabase('fms_updater',['hash' => $updater->hash]);
     }
 
     public function testUpdatePage(){
         $updater = FMSUpdater::first();
-        $updater->hash = sha1(str_random());
-        $updater->save();
-        $this->seeInDatabase('fms_updater',['hash' => $updater->hash]);
+        
+        $updater->update(['hash' => sha1(str_random())]);
         $this->visit('fms-updater/update')
             ->see('newer version')
-            ->dontSee('up to date')
+            ->dontSee('up to date');
+
+        $this->visit('fms-updater/update')
             ->press('Update')
-//            ->seePageIs('fms-updater/update')
+            ->seePageIs('fms-updater/update')
             ->see('Update Successful')
             ->see('up to date');
-        $this->visit('fms')
-            ->dontSee('hi')
-            ->see('good bye');
+
     }
+
+
+
 
 }

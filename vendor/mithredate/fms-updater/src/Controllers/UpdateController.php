@@ -9,15 +9,37 @@ use Mithredate\FMSUpdater\Contracts\UpdateHandlerContract;
 
 class UpdateController extends Controller
 {
-    public function index(UpdateHandlerContract $handler){
-        $hasUpdate = $handler->checkForUpdates();
+
+    /*
+     * UpdateHandlerContract $updateHandler
+     *
+     * Holds an UpdateHandler instance
+     * */
+    private $updateHandler;
+
+    /*
+     * UpdateController constructor
+     *
+     * @param UpdateHandlerContract $handlerContract
+     *
+     * Stores an UpdateHandler instance in UpdateHandler instance
+     * through the service container injection
+     * */
+    public function __construct(UpdateHandlerContract $handlerContract)
+    {
+        $this->updateHandler = $handlerContract;
+    }
+
+
+    public function index(){
+        $hasUpdate = $this->updateHandler->checkForUpdates();
         return view('fms-updater::index', compact('hasUpdate'));
     }
     
-    public function postUpdate(UpdateHandlerContract $handler){
-        if($handler->checkForUpdates()){
-            $handler->performUpdate();
+    public function postUpdate(){
+        if($this->updateHandler->checkForUpdates()){
+            $this->updateHandler->performUpdate();
         }
-        return back();
+        return redirect()->route('fms-updater.index');
     }
 }
