@@ -156,6 +156,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        \Mithredate\FMS\FMSServiceProvider::class,
+        \Mithredate\FMSUpdater\FMSUpdaterServiceProvider::class,
+
     ],
 
     /*
