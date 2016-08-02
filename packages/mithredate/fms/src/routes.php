@@ -2,5 +2,5 @@
 
 
 Route::get('fms',function(){
-   return 'hi';
+   return 'good bye';
 });
